@@ -79,9 +79,11 @@ const outputFile = `${outputDir}/${slug}.astro`;
 const saltB64 = Buffer.from(salt).toString('base64');
 const ivB64 = Buffer.from(iv).toString('base64');
 const ciphertextB64 = Buffer.from(combined).toString('base64');
+const timestamp = Math.floor(Date.now() / 1000);
 
 const pageContent = `---
-import '../../styles/global.css';
+/* created: ${timestamp} */
+import SecretContainer from '../../components/SecretContainer.astro';
 import BaseLayoutComponent from '../../layouts/BaseLayout.astro';
 ---
 
@@ -90,15 +92,7 @@ import BaseLayoutComponent from '../../layouts/BaseLayout.astro';
   data="${ciphertextB64}"
   iterations={${ITERATIONS}}
 >
-  <div class="container">
-    <div id="locked">
-      <h1>Enter Password</h1>
-      <input type="password" id="key" placeholder="Password" autocomplete="off" />
-      <button id="decrypt">Decrypt</button>
-      <p id="error">Incorrect password</p>
-    </div>
-    <pre id="content"></pre>
-  </div>
+  <SecretContainer />
 </BaseLayoutComponent>`;
 
 fs.writeFileSync(outputFile, pageContent);

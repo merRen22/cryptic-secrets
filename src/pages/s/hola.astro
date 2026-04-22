@@ -1,5 +1,5 @@
 ---
-import '../../styles/global.css';
+import SecretContainer from '../../components/SecretContainer.astro';
 import BaseLayoutComponent from '../../layouts/BaseLayout.astro';
 ---
 
@@ -8,13 +8,5 @@ import BaseLayoutComponent from '../../layouts/BaseLayout.astro';
   data="o1dY5OcNRjsf1TlE5nOoxzFBtDJiwM/uD6BI5BKzKYfgYfmP8EXFL2TIgrt8leGvouWlVH3NvmJIJ/gNdjKOFeoq"
   iterations={100000}
 >
-  <div class="container">
-    <div id="locked">
-      <h1>Enter Password</h1>
-      <input type="password" id="key" placeholder="Password" autocomplete="off" />
-      <button id="decrypt">Decrypt</button>
-      <p id="error">Incorrect password</p>
-    </div>
-    <pre id="content"></pre>
-  </div>
+  <SecretContainer />
 </BaseLayoutComponent>
