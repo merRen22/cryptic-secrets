@@ -80,87 +80,26 @@ const saltB64 = Buffer.from(salt).toString('base64');
 const ivB64 = Buffer.from(iv).toString('base64');
 const ciphertextB64 = Buffer.from(combined).toString('base64');
 
-const pageContent = `<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Secret</title>
-    <link rel="stylesheet" href="/styles/global.css" />
-  </head>
-  <body>
-    <div class="container">
-      <div id="locked">
-        <h1>Enter Password</h1>
-        <input type="password" id="key" placeholder="Password" autocomplete="off" />
-        <button id="decrypt">Decrypt</button>
-        <p id="error">Incorrect password</p>
-      </div>
-      <pre id="content"></pre>
+const pageContent = `---
+import '../../styles/global.css';
+import BaseLayoutComponent from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayoutComponent
+  title="Secret"
+  data="${ciphertextB64}"
+  iterations={${ITERATIONS}}
+>
+  <div class="container">
+    <div id="locked">
+      <h1>Enter Password</h1>
+      <input type="password" id="key" placeholder="Password" autocomplete="off" />
+      <button id="decrypt">Decrypt</button>
+      <p id="error">Incorrect password</p>
     </div>
-    <script>
-      const DATA = "${ciphertextB64}";
-      const ITERATIONS = ${ITERATIONS};
-
-      const input = document.getElementById("key");
-      const button = document.getElementById("decrypt");
-      const error = document.getElementById("error");
-      const locked = document.getElementById("locked");
-      const content = document.getElementById("content");
-
-      async function strToBuf(str) {
-        return new TextEncoder().encode(str);
-      }
-
-      async function base64ToBuf(str) {
-        return Uint8Array.from(atob(str), c => c.charCodeAt(0));
-      }
-
-      async function deriveKey(password) {
-        const combined = await base64ToBuf(DATA);
-        const salt = combined.slice(-28, -12);
-        const passwordBase64 = btoa(password);
-        const keyMaterial = await crypto.subtle.importKey(
-          "raw", await strToBuf(passwordBase64), "PBKDF2", false, ["deriveKey"]
-        );
-        return crypto.subtle.deriveKey(
-          { name: "PBKDF2", salt, iterations: ITERATIONS, hash: "SHA-256" },
-          keyMaterial,
-          { name: "AES-GCM", length: 256 },
-          false,
-          ["decrypt"]
-        );
-      }
-
-      async function decrypt(password) {
-        const combined = await base64ToBuf(DATA);
-        const ciphertext = combined.slice(0, -28);
-        const iv = combined.slice(-12);
-        const key = await deriveKey(password);
-        const plaintext = await crypto.subtle.decrypt(
-          { name: "AES-GCM", iv },
-          key,
-          ciphertext
-        );
-        return new TextDecoder().decode(plaintext);
-      }
-
-      async function handleDecrypt() {
-        const password = input.value;
-        try {
-          const text = await decrypt(password);
-          locked.style.display = "none";
-          content.style.display = "block";
-          content.textContent = text;
-        } catch {
-          error.style.display = "block";
-        }
-      }
-
-      button.addEventListener("click", handleDecrypt);
-      input.addEventListener("keypress", e => { if (e.key === "Enter") handleDecrypt(); });
-    </script>
-  </body>
-</html>`;
+    <pre id="content"></pre>
+  </div>
+</BaseLayoutComponent>`;
 
 fs.writeFileSync(outputFile, pageContent);
 console.log(`Created: ${outputFile}`);

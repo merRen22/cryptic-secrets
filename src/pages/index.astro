@@ -1,16 +1,7 @@
 ---
-import '../styles/global.css';
+import BaseLayoutComponent from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Secrets</title>
-	</head>
-	<body class="min-h-screen bg-white flex items-center justify-center">
-		<h1 class="text-4xl font-bold text-black">Secrets</h1>
-	</body>
-</html>
+<BaseLayoutComponent title="Secrets" description="Secure secret sharing made simple">
+  <h1 class="text-4xl font-bold text-black">Secrets</h1>
+</BaseLayoutComponent>
