@@ -20,12 +20,15 @@ const {
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen flex flex-col items-center justify-center p-8 bg-base-200 relative text-white">
+  <body class="min-h-screen flex flex-col items-center justify-center p-8 bg-base-200 relative text-white font-['Roboto']">
     <slot />
     {data && (
       <script is:inline define:vars={{ data, iterations }}>
