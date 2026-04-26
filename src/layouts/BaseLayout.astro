@@ -16,24 +16,30 @@ const {
 } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen flex flex-col items-center justify-center p-8 bg-primary relative text-white">
+  <body class="min-h-screen flex flex-col items-center justify-center p-8 bg-base-200 relative text-white font-['Roboto']">
     <slot />
     {data && (
       <script is:inline define:vars={{ data, iterations }}>
         const input = document.getElementById("key");
         const button = document.getElementById("decrypt");
         const error = document.getElementById("error");
-        const locked = document.getElementById("locked");
+        const decryptText = document.getElementById("decrypt-text");
+        const decryptLoading = document.getElementById("decrypt-loading");
+        const cardBody = document.querySelector(".card-body");
         const content = document.getElementById("content");
+        const contentWrapper = document.getElementById("content-wrapper");
 
         async function strToBuf(str) {
           return new TextEncoder().encode(str);
@@ -79,22 +85,28 @@ const {
         async function handleDecrypt() {
           const password = input.value;
           if (!password || password.trim().length === 0) {
-            error.textContent = "Wrong password";
             error.style.display = "block";
             return;
           }
           if (!/^[a-z0-9]+$/i.test(password)) {
-            error.textContent = "Wrong password";
             error.style.display = "block";
             return;
           }
+
+          button.disabled = true;
+          decryptText.classList.add("hidden");
+          decryptLoading.classList.remove("hidden");
+
           try {
             const text = await decrypt(password);
-            locked.style.display = "none";
-            content.style.display = "block";
-            content.textContent = text;
+            cardBody.style.display = "none";
+            contentWrapper.style.display = "block";
+            content.innerHTML = window.renderMarkdown(text);
           } catch {
             error.style.display = "block";
+            button.disabled = false;
+            decryptText.classList.remove("hidden");
+            decryptLoading.classList.add("hidden");
           }
         }
 
