@@ -34,6 +34,7 @@ const {
         const error = document.getElementById("error");
         const cardBody = document.querySelector(".card-body");
         const content = document.getElementById("content");
+        const contentWrapper = document.getElementById("content-wrapper");
 
         async function strToBuf(str) {
           return new TextEncoder().encode(str);
@@ -89,7 +90,7 @@ const {
           try {
             const text = await decrypt(password);
             cardBody.style.display = "none";
-            content.style.display = "block";
+            contentWrapper.style.display = "block";
             content.textContent = text;
           } catch {
             error.style.display = "block";
