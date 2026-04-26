@@ -6,13 +6,15 @@ interface Props {
   description?: string;
   data?: string;
   iterations?: number;
+  hint?: string | null;
 }
 
 const {
   title,
   description = 'A secure secret sharing site',
   data,
-  iterations = 100000
+  iterations = 100000,
+  hint = null
 } = Astro.props;
 ---
 
@@ -31,10 +33,15 @@ const {
   <body class="min-h-screen flex flex-col items-center justify-center p-8 bg-base-200 relative text-white font-['Roboto']">
     <slot />
     {data && (
-      <script is:inline define:vars={{ data, iterations }}>
+      <script is:inline define:vars={{ data, iterations, hint }}>
         const input = document.getElementById("key");
         const urlParams = new URLSearchParams(window.location.search);
         const uuid = urlParams.get("key");
+        const hintEl = document.getElementById("hint");
+        if (hint && hintEl) {
+          hintEl.textContent = hint;
+          hintEl.style.display = "block";
+        }
         const button = document.getElementById("decrypt");
         const error = document.getElementById("error");
         const decryptText = document.getElementById("decrypt-text");
