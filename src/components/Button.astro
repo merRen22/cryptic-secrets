@@ -1,18 +1,11 @@
 ---
 interface Props {
   id: string;
-  variant?: 'primary' | 'secondary';
 }
 
-const { id, variant = 'primary' } = Astro.props;
-
-const baseClasses = "btn";
-const variants = {
-  primary: "btn-primary",
-  secondary: "btn-outline btn-primary"
-};
+const { id } = Astro.props;
 ---
 
-<button {id} class:list={[baseClasses, variants[variant]]}>
+<button {id} class="btn btn-primary">
   <slot />
 </button>

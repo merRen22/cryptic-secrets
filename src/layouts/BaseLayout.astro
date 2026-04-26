@@ -35,6 +35,8 @@ const {
         const input = document.getElementById("key");
         const button = document.getElementById("decrypt");
         const error = document.getElementById("error");
+        const decryptText = document.getElementById("decrypt-text");
+        const decryptLoading = document.getElementById("decrypt-loading");
         const cardBody = document.querySelector(".card-body");
         const content = document.getElementById("content");
         const contentWrapper = document.getElementById("content-wrapper");
@@ -90,6 +92,11 @@ const {
             error.style.display = "block";
             return;
           }
+
+          button.disabled = true;
+          decryptText.classList.add("hidden");
+          decryptLoading.classList.remove("hidden");
+
           try {
             const text = await decrypt(password);
             cardBody.style.display = "none";
@@ -97,6 +104,9 @@ const {
             content.innerHTML = window.renderMarkdown(text);
           } catch {
             error.style.display = "block";
+            button.disabled = false;
+            decryptText.classList.remove("hidden");
+            decryptLoading.classList.add("hidden");
           }
         }
 
