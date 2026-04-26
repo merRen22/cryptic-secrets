@@ -91,7 +91,7 @@ const {
             const text = await decrypt(password);
             cardBody.style.display = "none";
             contentWrapper.style.display = "block";
-            content.textContent = text;
+            content.innerHTML = window.renderMarkdown(text);
           } catch {
             error.style.display = "block";
           }
