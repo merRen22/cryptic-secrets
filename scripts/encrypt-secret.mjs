@@ -12,12 +12,14 @@ const SALT_LENGTH = 16;
 const ITERATIONS = 100000;
 
 if (process.argv.length < 3) {
-  console.error('Usage: node encrypt-secret.mjs <input.md> [--uuid]');
+  console.error('Usage: node encrypt-secret.mjs <input.md> [--uuid] [--hint "<text>"]');
   process.exit(1);
 }
 
 const inputFile = process.argv[2];
 const includeUuid = process.argv.includes('--uuid');
+const hintIndex = process.argv.indexOf('--hint');
+const hint = hintIndex !== -1 ? process.argv[hintIndex + 1] : null;
 const slug = String(Math.floor(Date.now() / 1000));
 const uuid = includeUuid ? randomUUID() : null;
 
@@ -95,6 +97,7 @@ import BaseLayoutComponent from '../../layouts/BaseLayout.astro';
   title="Secret"
   data="${ciphertextB64}"
   iterations={${ITERATIONS}}
+  hint={${hint ? `"${hint.replace(/"/g, '\\"')}"` : 'null'}}
 >
   <SecretContainer />
 </BaseLayoutComponent>`;

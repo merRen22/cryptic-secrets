@@ -38,13 +38,15 @@ npm run dev
 ```bash
 node scripts/encrypt-secret.mjs path/to/secret.md
 node scripts/encrypt-secret.mjs path/to/secret.md --uuid
+node scripts/encrypt-secret.mjs path/to/secret.md --uuid --hint "The password is your name"
 ```
 
 - Prompts for encryption password (hidden input)
 - Outputs to `src/pages/s/<unix-timestamp>.astro`
 - Access the secret at `https://merren22.github.io/cryptic-secrets/s/<unix-timestamp>`
 - With `--uuid`: UUID is generated and passed as query param `?key=<uuid>` in the URL, password format becomes `<password>-<uuid>` (UUID is shown in output)
+- With `--hint`: A hint is displayed above the password field to help the receiver decipher the password
 
 # Samples:
 
-https://merren22.github.io/cryptic-secrets/s/1777224385?key=40419773-9d3c-4f89-afe3-e8c54df87265 password abc
+https://merren22.github.io/cryptic-secrets/s/1777226242?key=ea86f368-55fd-4952-94d3-1f8d832da12a password abc
