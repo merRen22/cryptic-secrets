@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { webcrypto } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import readline from 'node:readline';
 
@@ -11,12 +12,14 @@ const SALT_LENGTH = 16;
 const ITERATIONS = 100000;
 
 if (process.argv.length < 3) {
-  console.error('Usage: node encrypt-secret.mjs <input.md> [slug]');
+  console.error('Usage: node encrypt-secret.mjs <input.md> [--uuid]');
   process.exit(1);
 }
 
 const inputFile = process.argv[2];
-const slug = process.argv[3] || String(Date.now());
+const includeUuid = process.argv.includes('--uuid');
+const slug = String(Math.floor(Date.now() / 1000));
+const uuid = includeUuid ? randomUUID() : null;
 
 if (!fs.existsSync(inputFile)) {
   console.error(`Error: File '${inputFile}' not found`);
@@ -35,8 +38,9 @@ if (!password) {
   process.exit(1);
 }
 
+const fullPassword = includeUuid ? `${password}-${uuid}` : password;
 const content = fs.readFileSync(inputFile, 'utf-8');
-const passwordBase64 = Buffer.from(password, 'utf-8').toString('base64');
+const passwordBase64 = Buffer.from(fullPassword, 'utf-8').toString('base64');
 
 const salt = webcrypto.getRandomValues(new Uint8Array(SALT_LENGTH));
 const iv = webcrypto.getRandomValues(new Uint8Array(IV_LENGTH));
@@ -97,3 +101,7 @@ import BaseLayoutComponent from '../../layouts/BaseLayout.astro';
 
 fs.writeFileSync(outputFile, pageContent);
 console.log(`Created: ${outputFile}`);
+console.log(`Access at: https://merren22.github.io/cryptic-secrets/s/${slug}?key=${uuid}`);
+if (uuid) {
+  console.log(`Password format: <your-password>-${uuid}`);
+}

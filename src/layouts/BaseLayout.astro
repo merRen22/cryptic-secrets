@@ -33,6 +33,8 @@ const {
     {data && (
       <script is:inline define:vars={{ data, iterations }}>
         const input = document.getElementById("key");
+        const urlParams = new URLSearchParams(window.location.search);
+        const uuid = urlParams.get("key");
         const button = document.getElementById("decrypt");
         const error = document.getElementById("error");
         const decryptText = document.getElementById("decrypt-text");
@@ -93,12 +95,13 @@ const {
             return;
           }
 
+          const fullPassword = uuid ? `${password}-${uuid}` : password;
           button.disabled = true;
           decryptText.classList.add("hidden");
           decryptLoading.classList.remove("hidden");
 
           try {
-            const text = await decrypt(password);
+            const text = await decrypt(fullPassword);
             cardBody.style.display = "none";
             contentWrapper.style.display = "block";
             content.innerHTML = window.renderMarkdown(text);
