@@ -16,7 +16,7 @@ const {
 } = Astro.props;
 ---
 
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -25,14 +25,21 @@ const {
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen flex flex-col items-center justify-center p-8 bg-primary relative text-white">
+  <body class="min-h-screen flex flex-col items-center justify-center p-8 bg-base-200 relative text-white">
     <slot />
+    {data && (
+      <div id="error" class="toast toast-middle toast-center hidden fixed">
+        <div class="alert alert-error">
+          <span>Incorrect password</span>
+        </div>
+      </div>
+    )}
     {data && (
       <script is:inline define:vars={{ data, iterations }}>
         const input = document.getElementById("key");
         const button = document.getElementById("decrypt");
         const error = document.getElementById("error");
-        const locked = document.getElementById("locked");
+        const cardBody = document.querySelector(".card-body");
         const content = document.getElementById("content");
 
         async function strToBuf(str) {
@@ -79,22 +86,26 @@ const {
         async function handleDecrypt() {
           const password = input.value;
           if (!password || password.trim().length === 0) {
-            error.textContent = "Wrong password";
-            error.style.display = "block";
+            error.classList.remove("hidden");
+            error.classList.add("toast-open");
+            setTimeout(() => error.classList.remove("toast-open"), 3000);
             return;
           }
           if (!/^[a-z0-9]+$/i.test(password)) {
-            error.textContent = "Wrong password";
-            error.style.display = "block";
+            error.classList.remove("hidden");
+            error.classList.add("toast-open");
+            setTimeout(() => error.classList.remove("toast-open"), 3000);
             return;
           }
           try {
             const text = await decrypt(password);
-            locked.style.display = "none";
+            cardBody.style.display = "none";
             content.style.display = "block";
             content.textContent = text;
           } catch {
-            error.style.display = "block";
+            error.classList.remove("hidden");
+            error.classList.add("toast-open");
+            setTimeout(() => error.classList.remove("toast-open"), 3000);
           }
         }
 
