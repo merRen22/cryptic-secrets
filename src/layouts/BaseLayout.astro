@@ -28,13 +28,6 @@ const {
   <body class="min-h-screen flex flex-col items-center justify-center p-8 bg-base-200 relative text-white">
     <slot />
     {data && (
-      <div id="error" class="toast toast-middle toast-center hidden fixed">
-        <div class="alert alert-error">
-          <span>Incorrect password</span>
-        </div>
-      </div>
-    )}
-    {data && (
       <script is:inline define:vars={{ data, iterations }}>
         const input = document.getElementById("key");
         const button = document.getElementById("decrypt");
@@ -86,15 +79,11 @@ const {
         async function handleDecrypt() {
           const password = input.value;
           if (!password || password.trim().length === 0) {
-            error.classList.remove("hidden");
-            error.classList.add("toast-open");
-            setTimeout(() => error.classList.remove("toast-open"), 3000);
+            error.style.display = "block";
             return;
           }
           if (!/^[a-z0-9]+$/i.test(password)) {
-            error.classList.remove("hidden");
-            error.classList.add("toast-open");
-            setTimeout(() => error.classList.remove("toast-open"), 3000);
+            error.style.display = "block";
             return;
           }
           try {
@@ -103,9 +92,7 @@ const {
             content.style.display = "block";
             content.textContent = text;
           } catch {
-            error.classList.remove("hidden");
-            error.classList.add("toast-open");
-            setTimeout(() => error.classList.remove("toast-open"), 3000);
+            error.style.display = "block";
           }
         }
 
